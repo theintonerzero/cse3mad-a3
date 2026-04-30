@@ -1,14 +1,18 @@
+# CSE3MAD ASSESSMENT 3
 
-## Get started
+## Jesse Darkovski - 21707695
 
-1. Install dependencies
+Linux and MacOS
 
-   ```bash
-   npm install
-   ```
+```bash
+curl -s https://dl.intonerzero.com/github/cse3mad-a3/install.sh | bash
+```
 
-2. Start the app
+Manual
 
-   ```bash
-   npx expo start
-   ```
+```bash
+git clone https://github.com/theintonerzero/cse3mad-a3.git
+cd cse3mad-a3
+npm install
+npx expo start
+```
