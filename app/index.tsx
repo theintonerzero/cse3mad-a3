@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  useWindowDimensions,
+} from "react-native";
 import { Accelerometer } from "expo-sensors";
 import { LineChart } from "react-native-gifted-charts";
 import {
@@ -10,6 +16,11 @@ import {
 } from "@expo-google-fonts/inter";
 
 const MAX_POINTS = 50;
+
+const OUTER_PADDING = 20;
+const CARD_PADDING = 12;
+const Y_AXIS_WIDTH = 35;
+const END_SPACING = 20;
 
 const colours = {
   base: "#faf4ed",
@@ -31,6 +42,10 @@ export default function Index() {
     Inter_700Bold,
   });
 
+  const { width: screenWidth } = useWindowDimensions();
+  const cardWidth = screenWidth - OUTER_PADDING * 2;
+  const plotWidth = cardWidth - CARD_PADDING * 2 - Y_AXIS_WIDTH - END_SPACING;
+
   const [data, setData] = useState({ x: 0, y: 0, z: 0 });
   const [history, setHistory] = useState<{ x: number; y: number; z: number }[]>(
     Array(MAX_POINTS).fill({ x: 0, y: 0, z: 0 }),
@@ -39,11 +54,11 @@ export default function Index() {
 
   useEffect(() => {
     if (!recording) return;
+    Accelerometer.setUpdateInterval(100);
     const sub = Accelerometer.addListener((value) => {
       setData(value);
       setHistory((prev) => [...prev.slice(-(MAX_POINTS - 1)), value]);
     });
-    Accelerometer.setUpdateInterval(100);
     return () => sub.remove();
   }, [recording]);
 
@@ -72,7 +87,7 @@ export default function Index() {
         </View>
       </View>
 
-      <View style={styles.chartContainer}>
+      <View style={[styles.chartContainer, { width: cardWidth }]}>
         <LineChart
           data={xData}
           data2={yData}
@@ -96,10 +111,12 @@ export default function Index() {
           rulesType="solid"
           rulesColor={colours.overlay}
           backgroundColor={colours.surface}
-          width={300}
+          width={plotWidth}
           height={180}
           initialSpacing={0}
-          spacing={6}
+          spacing={plotWidth / MAX_POINTS}
+          endSpacing={END_SPACING}
+          yAxisLabelWidth={Y_AXIS_WIDTH}
           isAnimated={false}
           hideRules={false}
         />
@@ -123,7 +140,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
+    padding: OUTER_PADDING,
     gap: 20,
     backgroundColor: colours.base,
   },
@@ -155,7 +172,8 @@ const styles = StyleSheet.create({
   chartContainer: {
     backgroundColor: colours.surface,
     borderRadius: 12,
-    padding: 12,
+    padding: CARD_PADDING,
+    overflow: "hidden",
   },
   button: {
     paddingVertical: 14,
