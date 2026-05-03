@@ -42,15 +42,15 @@ export default function Index() {
     Inter_700Bold,
   });
 
-  const { width: screenWidth } = useWindowDimensions();
-  const cardWidth = screenWidth - OUTER_PADDING * 2;
-  const plotWidth = cardWidth - CARD_PADDING * 2 - Y_AXIS_WIDTH - END_SPACING;
-
   const [data, setData] = useState({ x: 0, y: 0, z: 0 });
   const [history, setHistory] = useState<{ x: number; y: number; z: number }[]>(
     Array(MAX_POINTS).fill({ x: 0, y: 0, z: 0 }),
   );
   const [recording, setRecording] = useState(false);
+
+  const { width: screenWidth } = useWindowDimensions();
+  const cardWidth = screenWidth - OUTER_PADDING * 2;
+  const plotWidth = cardWidth - CARD_PADDING * 2 - Y_AXIS_WIDTH - END_SPACING;
 
   useEffect(() => {
     if (!recording) return;
